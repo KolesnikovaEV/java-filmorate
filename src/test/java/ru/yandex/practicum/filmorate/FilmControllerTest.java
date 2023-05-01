@@ -23,6 +23,7 @@ public class FilmControllerTest {
     private static FilmController filmController = new FilmController(filmService);
 
     private static Validator validator;
+
     static {
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
@@ -39,6 +40,7 @@ public class FilmControllerTest {
 
         Assertions.assertEquals(List.of(film, film2), filmController.findAll());
     }
+
     @Test
     public void shouldUpdateFilm() {
         Film film = new Film(1, "name", "description",
@@ -50,6 +52,7 @@ public class FilmControllerTest {
 
         Assertions.assertEquals(List.of(film2), filmController.findAll());
     }
+
     @Test
     public void shouldNotUpdateFilm() {
         Film film = new Film(1, "name", "description",
@@ -70,7 +73,7 @@ public class FilmControllerTest {
 
         ValidationException exception = assertThrows(ValidationException.class, () -> {
             Set<ConstraintViolation<Film>> validates = validator.validate(film);
-            if(!validates.isEmpty()) {
+            if (!validates.isEmpty()) {
                 throw new ConstraintViolationException(validates);
             }
         });
@@ -92,7 +95,7 @@ public class FilmControllerTest {
 
         ValidationException exception = assertThrows(ValidationException.class, () -> {
             Set<ConstraintViolation<Film>> validates = validator.validate(film);
-            if(!validates.isEmpty()) {
+            if (!validates.isEmpty()) {
                 throw new ConstraintViolationException(validates);
             }
         });
@@ -105,7 +108,7 @@ public class FilmControllerTest {
 
         ValidationException exception = assertThrows(ValidationException.class, () -> {
             Set<ConstraintViolation<Film>> validates = validator.validate(film);
-            if(!validates.isEmpty()) {
+            if (!validates.isEmpty()) {
                 throw new ConstraintViolationException(validates);
             }
         });

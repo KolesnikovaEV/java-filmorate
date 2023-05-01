@@ -23,6 +23,7 @@ public class UserControllerTest {
 
 
     private static Validator validator;
+
     static {
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
@@ -35,7 +36,7 @@ public class UserControllerTest {
 
         ValidationException exception = assertThrows(ValidationException.class, () -> {
             Set<ConstraintViolation<User>> validates = validator.validate(user);
-            if(!validates.isEmpty()) {
+            if (!validates.isEmpty()) {
                 throw new ConstraintViolationException(validates);
             }
         });
@@ -57,7 +58,7 @@ public class UserControllerTest {
 
         ValidationException exception = assertThrows(ValidationException.class, () -> {
             Set<ConstraintViolation<User>> validates = validator.validate(user);
-            if(!validates.isEmpty()) {
+            if (!validates.isEmpty()) {
                 throw new ConstraintViolationException(validates);
             }
         });
@@ -70,7 +71,7 @@ public class UserControllerTest {
 
         ValidationException exception = assertThrows(ValidationException.class, () -> {
             Set<ConstraintViolation<User>> validates = validator.validate(user);
-            if(!validates.isEmpty()) {
+            if (!validates.isEmpty()) {
                 throw new ConstraintViolationException(validates);
             }
         });

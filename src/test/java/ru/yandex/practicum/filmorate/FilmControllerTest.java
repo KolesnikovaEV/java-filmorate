@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.control.FilmController;
@@ -9,7 +10,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.*;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +24,11 @@ public class FilmControllerTest {
 
     private static Validator validator;
 
-    static {
+    @BeforeEach
+    public void setUp() {
+        filmService = new FilmService();
+        filmController = new FilmController(filmService);
+
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
     }

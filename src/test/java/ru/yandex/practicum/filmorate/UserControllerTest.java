@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.control.UserController;
@@ -21,10 +22,13 @@ public class UserControllerTest {
     private static UserService userService = new UserService();
     private static UserController userController = new UserController(userService);
 
-
     private static Validator validator;
 
-    static {
+    @BeforeEach
+    public void setUp() {
+        userService = new UserService();
+        userController = new UserController(userService);
+
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
     }

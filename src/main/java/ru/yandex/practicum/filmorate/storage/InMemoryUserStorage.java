@@ -58,9 +58,23 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User findUserById(int id) {
+        log.info("Finding user {}", id);
         User existingUser = users.get(id);
         if (existingUser != null) {
+            log.info("User {} is founded", id);
             return existingUser;
+        } else {
+            throw new NotFoundException("User not found");
+        }
+    }
+
+    @Override
+    public void deleteUser(int id) {
+        log.info("Removing user {}", id);
+        User existingUser = users.get(id);
+        if (existingUser != null) {
+            log.info("User deleted {}", id);
+            users.remove(id);
         } else {
             throw new NotFoundException("User not found");
         }

@@ -63,4 +63,9 @@ public class UserController {
         User user = userStorage.findUserById(userId);
         return user;
     }
+
+    @DeleteMapping("/{userId}")
+    public void deleteUser(@PathVariable int userId) {
+        userStorage.deleteUser(userId);
+    }
 }

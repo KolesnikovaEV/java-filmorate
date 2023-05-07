@@ -40,13 +40,15 @@ public class UserService {
     }
 
     public void removeFriend(int userId, int friendId) {
+        log.info("Removing friend {} for user {}", friendId, userId);
         User user = userStorage.findUserById(userId);
         User friend = userStorage.findUserById(friendId);
         if (user != null && friend != null) {
-            user.getFriends().remove(friend);
-            friend.getFriends().remove(user);
+            user.getFriends().remove(friendId);
+            friend.getFriends().remove(userId);
             userStorage.updateUser(userId, user);
             userStorage.updateUser(friendId, friend);
+            log.info("Friend {} is removed for user {}", friendId, userId);
         } else {
             throw new NotFoundException("User not found");
         }

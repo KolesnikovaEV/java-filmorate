@@ -65,4 +65,16 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new NotFoundException("Film not found");
         }
     }
+
+    @Override
+    public void deleteFilm(int id) {
+        log.info("Removing film {}", id);
+        Film existingFilm = films.get(id);
+        if (existingFilm != null) {
+            log.info("Film deleted {}", id);
+            films.remove(id);
+        } else {
+            throw new NotFoundException("Film not found");
+        }
+    }
 }

@@ -1,53 +1,93 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class UserService {
+    private final FilmStorage filmStorage;
+    private final UserStorage userStorage;
 
-    private final Map<Integer, User> users = new HashMap<>();
-
-    public List<User> findAllUsers() {
-        log.info("Finding all users");
-        log.info("Found {} users", users.size());
-        return new ArrayList<>(users.values());
+    @Autowired
+    public UserService(FilmStorage filmStorage, UserStorage userStorage) {
+        this.filmStorage = filmStorage;
+        this.userStorage = userStorage;
     }
 
-    public User addUser(User user) {
-        try {
-            log.info("Adding new user: {}", user);
-            user.setId(users.size() + 1);
-            users.put(user.getId(), user);
-            log.info("New user added: {}", user);
-            return user;
-        } catch (ValidationException e) {
-            throw new ValidationException("Invalid user data");
+    public void addFriend(int userId, int friendId) {
+        log.info("Adding friend for user {}", userId);
+        User user = userStorage.findUserById(userId);
+        User friend = userStorage.findUserById(friendId);
+        if (user != null && friend != null) {
+            user.getFriends().add(friend.getId());
+            friend.getFriends().add(user.getId());
+            userStorage.updateUser(userId, user);
+            userStorage.updateUser(friendId, friend);
+            log.info("New friend for user {} added", userId);
+        } else {
+            throw new NotFoundException("User not found");
         }
     }
 
-    public User updateUser(User userToUpdate) {
-        log.info("Updating user: {}", userToUpdate);
+    public void removeFriend(int userId, int friendId) {
+        log.info("Removing friend {} for user {}", friendId, userId);
+        User user = userStorage.findUserById(userId);
+        User friend = userStorage.findUserById(friendId);
+        if (user != null && friend != null) {
+            user.getFriends().remove(friendId);
+            friend.getFriends().remove(userId);
+            userStorage.updateUser(userId, user);
+            userStorage.updateUser(friendId, friend);
+            log.info("Friend {} is removed for user {}", friendId, userId);
+        } else {
+            throw new NotFoundException("User not found");
+        }
+    }
 
-        User existingUser = users.get(userToUpdate.getId());
-        if (existingUser != null) {
-            existingUser.setName(userToUpdate.getName());
-            existingUser.setEmail(userToUpdate.getEmail());
-            existingUser.setBirthday(userToUpdate.getBirthday());
-            existingUser.setLogin(userToUpdate.getLogin());
+    public List<User> getCommonFriends(int user1Id, int user2Id) {
+        log.info("Finding common friends");
+        User user1 = userStorage.findUserById(user1Id);
+        User user2 = userStorage.findUserById(user2Id);
+        List<User> commonFriends = new ArrayList<>();
+        if (user1 != null && user2 != null) {
+            List<Integer> user1Friends = new ArrayList<>(user1.getFriends());
+            List<Integer> user2Friends = new ArrayList<>(user2.getFriends());
+            for (Integer userId : user1Friends) {
+                if (user2Friends.contains(userId)) {
+                    commonFriends.add(userStorage.findUserById(userId));
+                }
+            }
+            log.info("Common friends are found");
+            return commonFriends;
+        }
+        log.info("Common friends are not found");
+        return commonFriends;
+    }
 
-            users.put(existingUser.getId(), existingUser);
-
-            log.info("User updated: {}", existingUser);
-            return existingUser;
+    public List<User> getFriends(int userId) {
+        log.info("Getting friend for user {}", userId);
+        User user = userStorage.findUserById(userId);
+        if (user != null) {
+            List<User> friendsList = new ArrayList<>();
+            Set<Integer> friends = user.getFriends();
+            if (!friends.isEmpty()) {
+                for (Integer friendId : friends) {
+                    if (friendId != null) {
+                        friendsList.add(userStorage.findUserById(friendId));
+                    }
+                }
+            }
+            return friendsList;
         } else {
             throw new NotFoundException("User not found");
         }

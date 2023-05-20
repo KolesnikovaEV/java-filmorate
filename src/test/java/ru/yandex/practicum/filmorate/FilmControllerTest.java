@@ -8,6 +8,10 @@ import ru.yandex.practicum.filmorate.control.FilmController;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import javax.validation.*;
 import java.time.LocalDate;
@@ -19,15 +23,18 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class FilmControllerTest {
-    private static FilmService filmService = new FilmService();
-    private static FilmController filmController = new FilmController(filmService);
-
+    private FilmStorage filmStorage;
+    private UserStorage userStorage;
+    private FilmService filmService;
+    private FilmController filmController;
     private static Validator validator;
 
     @BeforeEach
     public void setUp() {
-        filmService = new FilmService();
-        filmController = new FilmController(filmService);
+        filmStorage = new InMemoryFilmStorage();
+        userStorage = new InMemoryUserStorage();
+        filmService = new FilmService(filmStorage, userStorage);
+        filmController = new FilmController(filmService, filmStorage);
 
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();

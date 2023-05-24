@@ -9,7 +9,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -40,17 +42,46 @@ public class Film {
     @Positive(message = "The duration of the film must be positive")
     private int duration;
 
+    private List<Integer> genres;
+
+    private Mpa mpa;
+
     private Set<Integer> likes;
 
     public Set<Integer> getLikes() {
         if (likes == null) {
-            likes = new HashSet<>();
+            likes = new LinkedHashSet<>();
         }
         return likes;
     }
 
-    public Film(int id, String name, String description, LocalDate releaseDate, int duration) {
+    public List<Integer> getGenres() {
+        if (genres == null) {
+            genres = new ArrayList<>();
+        }
+        return genres;
+    }
+
+    public Film(int id, String name, String description, LocalDate releaseDate, int duration,
+                List<Integer> genres, Mpa mpa) {
         this.id = id;
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.genres = genres;
+        this.mpa = mpa;
+    }
+
+    public Film(int id, String name, String description, LocalDate releaseDate, int duration, List<Integer> genres) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.genres = genres;
+    }
+    public Film(String name, String description, LocalDate releaseDate, int duration) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
@@ -65,6 +96,8 @@ public class Film {
                 ", description='" + description + '\'' +
                 ", releaseDate=" + releaseDate +
                 ", duration=" + duration +
+                ", genres=" + genres +
+                ", rating='" + mpa + '\'' +
                 ", likes=" + likes +
                 '}';
     }

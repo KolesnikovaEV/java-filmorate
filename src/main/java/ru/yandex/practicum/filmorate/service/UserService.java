@@ -29,11 +29,7 @@ public class UserService {
         User user = userStorage.findUserById(userId);
         User friend = userStorage.findUserById(friendId);
         if (user != null && friend != null) {
-            user.getFriends().add(friend.getId());
-            friend.getFriends().add(user.getId());
-            userStorage.updateUser(userId, user);
-            userStorage.updateUser(friendId, friend);
-            log.info("New friend for user {} added", userId);
+            userStorage.addFriend(userId, friendId);
         } else {
             throw new NotFoundException("User not found");
         }
@@ -78,16 +74,13 @@ public class UserService {
         log.info("Getting friend for user {}", userId);
         User user = userStorage.findUserById(userId);
         if (user != null) {
-            List<User> friendsList = new ArrayList<>();
-            Set<Integer> friends = user.getFriends();
-            if (!friends.isEmpty()) {
-                for (Integer friendId : friends) {
-                    if (friendId != null) {
-                        friendsList.add(userStorage.findUserById(friendId));
-                    }
-                }
+            try {
+                List<User> friendsList = userStorage.getFriends(userId);
+                return friendsList;
+            } catch (NotFoundException e) {
+                throw new NotFoundException("Friends not found");
             }
-            return friendsList;
+
         } else {
             throw new NotFoundException("User not found");
         }

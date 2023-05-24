@@ -30,8 +30,8 @@ public class FilmService {
         User user = userStorage.findUserById(userId);
         Film film = filmStorage.findFilmById(filmId);
         if (user != null && film != null) {
-            film.getLikes().add(userId);
-            filmStorage.updateFilm(filmId, film);
+            //film.getLikes().add(userId);
+            filmStorage.addLikes(userId, filmId);
         } else {
             throw new NotFoundException("Film or User not found");
         }

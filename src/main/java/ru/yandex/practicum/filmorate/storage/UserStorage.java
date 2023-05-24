@@ -14,4 +14,7 @@ public interface UserStorage {
     User findUserById(int id);
 
     void deleteUser(int id);
+    void addFriend(int userId1, int userId2);
+    List<User> getFriends(int userId);
+
 }

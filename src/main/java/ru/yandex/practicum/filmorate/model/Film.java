@@ -1,21 +1,18 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -42,7 +39,7 @@ public class Film {
     @Positive(message = "The duration of the film must be positive")
     private int duration;
 
-    private List<Integer> genres;
+    private LinkedHashSet<Genre> genres;
 
     private Mpa mpa;
 
@@ -55,50 +52,11 @@ public class Film {
         return likes;
     }
 
-    public List<Integer> getGenres() {
+    public Set<Genre> getGenres() {
         if (genres == null) {
-            genres = new ArrayList<>();
+            genres = new LinkedHashSet<>();
         }
         return genres;
     }
 
-    public Film(int id, String name, String description, LocalDate releaseDate, int duration,
-                List<Integer> genres, Mpa mpa) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-        this.genres = genres;
-        this.mpa = mpa;
-    }
-
-    public Film(int id, String name, String description, LocalDate releaseDate, int duration, List<Integer> genres) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-        this.genres = genres;
-    }
-    public Film(String name, String description, LocalDate releaseDate, int duration) {
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-    }
-
-    @Override
-    public String toString() {
-        return "Film{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", releaseDate=" + releaseDate +
-                ", duration=" + duration +
-                ", genres=" + genres +
-                ", rating='" + mpa + '\'' +
-                ", likes=" + likes +
-                '}';
-    }
 }

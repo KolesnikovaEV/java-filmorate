@@ -70,6 +70,7 @@ public class FilmController {
     public void deleteFilm(@PathVariable int id) {
         filmStorage.deleteFilm(id);
     }
+
     @GetMapping("/genres")
     public List<Genre> getAllGenres() {
         return filmStorage.getAllGenres();

@@ -29,6 +29,7 @@ public class ErrorHandler {
                 e.getMessage()
         );
     }
+
     @ExceptionHandler(InternalServerError.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleInternalServerError(InternalServerError e) {
@@ -36,6 +37,7 @@ public class ErrorHandler {
                 e.getMessage()
         );
     }
+
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handlePostNotFoundException(NotFoundException e) {

@@ -1,13 +1,20 @@
 package ru.yandex.practicum.filmorate.model;
 
-public class Mpa {
-    private int id;
-    private String name;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public Mpa() {
-    }
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+public enum Mpa {
+    G(1, "G"),
+    PG(2, "PG"),
+    PG_13(3, "PG-13"),
+    R(4, "R"),
+    NC_17(5, "NC-17");
+    private final int id;
+    private final String name;
 
-    public Mpa(int id, String name) {
+    Mpa(int id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -16,15 +23,17 @@ public class Mpa {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @JsonCreator
+    public static Mpa forValues(@JsonProperty("id") int id) {
+        for (Mpa mpa : Mpa.values()) {
+            if (mpa.id == id) {
+                return mpa;
+            }
+        }
+        return null;
     }
 }

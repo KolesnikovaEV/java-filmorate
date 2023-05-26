@@ -152,6 +152,8 @@ public class FilmDaoImpl implements FilmStorage {
 
     @Override
     public void deleteFilm(int id) {
+        deleteGenres(id);
+        deleteLikes(id);
         String sqlQuery = "DELETE FROM FILMS WHERE id = ?";
         int deletedRows = jdbcTemplate.update(sqlQuery, id);
         if (deletedRows > 0) {
@@ -159,8 +161,6 @@ public class FilmDaoImpl implements FilmStorage {
         } else {
             throw new NotFoundException("Film not found");
         }
-        deleteGenres(id);
-        deleteLikes(id);
     }
 
     @Override

@@ -37,11 +37,11 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User findUserById(int id) {
+        String sqlQuery = "select * from USERS where id = ?";
         try {
-            String sqlQuery = "select * from USERS where id = ?";
             return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToUser, id);
         } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException("User not found" + id);
+            throw new EmptyResultDataAccessException("User not found", 1);
         }
     }
 

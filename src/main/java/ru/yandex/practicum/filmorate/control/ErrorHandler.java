@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.control;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -60,6 +61,14 @@ public class ErrorHandler {
     public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         return new ErrorResponse(
                 "Ошибка валидации: " + e.getLocalizedMessage()
+        );
+    }
+
+    @ExceptionHandler(EmptyResultDataAccessException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleMethodEmptyResultDataAccessException(EmptyResultDataAccessException e) {
+        return new ErrorResponse(
+                "Ошибка: " + e.getMessage()
         );
     }
 }

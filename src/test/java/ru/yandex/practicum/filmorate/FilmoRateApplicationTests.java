@@ -10,8 +10,8 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.impl.FilmDaoImpl;
-import ru.yandex.practicum.filmorate.storage.impl.UserDaoImpl;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
@@ -24,8 +24,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class FilmoRateApplicationTests {
-    private final UserDaoImpl userStorage;
-    private final FilmDaoImpl filmStorage;
+    private final UserStorage userStorage;
+    private final FilmStorage filmStorage;
 
     @Test
     public void testAddUser() {
@@ -237,6 +237,40 @@ class FilmoRateApplicationTests {
         filmStorage.deleteFilm(addedFilm.getId());
 
         assertThrows(NotFoundException.class, () -> filmStorage.findFilmById(addedFilm.getId()));
+    }
+
+    @Test
+    public void testDeleteNonExistentFilm() {
+        assertThrows(NotFoundException.class, () -> filmStorage.deleteFilm(100));
+    }
+
+    @Test
+    public void testFindNonExistentUserById() {
+        assertThrows(NotFoundException.class, () -> userStorage.findUserById(100));
+    }
+
+    @Test
+    public void testUpdateNonExistentUser() {
+        User updatedUser = User.builder()
+                .id(100)
+                .email("test_email")
+                .login("test_login")
+                .name("test_name")
+                .birthday(LocalDate.of(2000, 1, 1))
+                .build();
+
+        assertThrows(NotFoundException.class, () -> userStorage.updateUser(100, updatedUser));
+    }
+
+
+    @Test
+    public void testGetFriendsNonExistentUser() {
+        assertThrows(NotFoundException.class, () -> userStorage.getFriends(100));
+    }
+
+    @Test
+    public void testFindNonExistentFilmById() {
+        assertThrows(NotFoundException.class, () -> filmStorage.findFilmById(100));
     }
 }
 

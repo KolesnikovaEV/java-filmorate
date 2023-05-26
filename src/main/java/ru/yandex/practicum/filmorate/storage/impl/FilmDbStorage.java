@@ -17,12 +17,12 @@ import java.sql.*;
 import java.util.*;
 
 @Component
-public class FilmDaoImpl implements FilmStorage {
-    private final Logger log = LoggerFactory.getLogger(FilmDaoImpl.class);
+public class FilmDbStorage implements FilmStorage {
+    private final Logger log = LoggerFactory.getLogger(FilmDbStorage.class);
 
     private final JdbcTemplate jdbcTemplate;
 
-    public FilmDaoImpl(JdbcTemplate jdbcTemplate) {
+    public FilmDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -143,7 +143,7 @@ public class FilmDaoImpl implements FilmStorage {
         String filmQuery = "SELECT COUNT(ID) FROM FILMS WHERE ID = ?";
         int count = jdbcTemplate.queryForObject(filmQuery, Integer.class, id);
         if (count == 0) {
-            throw new NotFoundException("Film not found");
+            throw new NotFoundException("Film not found with id: " + id);
         }
         String sqlQuery = "select id, name, description, release_date, duration, MPA_FILM_RATING_ID " +
                 "from films where id = ?";
@@ -159,7 +159,7 @@ public class FilmDaoImpl implements FilmStorage {
         if (deletedRows > 0) {
             log.info("Film deleted {}", id);
         } else {
-            throw new NotFoundException("Film not found");
+            throw new NotFoundException("Film not found with id: " + id);
         }
     }
 
@@ -172,7 +172,7 @@ public class FilmDaoImpl implements FilmStorage {
     public Genre getGenreById(int id) {
         Genre genre = Genre.forValues(id);
         if (genre == null) {
-            throw new NotFoundException("Genre not found");
+            throw new NotFoundException("Genres not found");
         }
         return genre;
     }
@@ -186,7 +186,7 @@ public class FilmDaoImpl implements FilmStorage {
     public Mpa getMpaById(int id) {
         Mpa mpa = Mpa.forValues(id);
         if (mpa == null) {
-            throw new NotFoundException("Mpa not found");
+            throw new NotFoundException("Mpa not found with id " + id);
         }
         return mpa;
     }

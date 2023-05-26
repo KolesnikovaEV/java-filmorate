@@ -12,17 +12,16 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Component
-public class UserDaoImpl implements UserStorage {
-    private final Logger log = LoggerFactory.getLogger(UserDaoImpl.class);
+public class UserDbStorage implements UserStorage {
+    private final Logger log = LoggerFactory.getLogger(UserDbStorage.class);
 
     private final JdbcTemplate jdbcTemplate;
 
-    public UserDaoImpl(JdbcTemplate jdbcTemplate) {
+    public UserDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -38,11 +37,11 @@ public class UserDaoImpl implements UserStorage {
 
     @Override
     public User findUserById(int id) {
-        String sqlQuery = "select * from USERS where id = ?";
         try {
+            String sqlQuery = "select * from USERS where id = ?";
             return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToUser, id);
         } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException("User not found");
+            throw new NotFoundException("User not found" + id);
         }
     }
 
@@ -89,7 +88,7 @@ public class UserDaoImpl implements UserStorage {
                 id);
 
         if (updatedRows == 0) {
-            throw new NotFoundException("User not found");
+            throw new NotFoundException("User not found with id: " + id);
         }
 
         jdbcTemplate.update(sqlQueryUpdateLikes,
@@ -151,22 +150,13 @@ public class UserDaoImpl implements UserStorage {
 
     @Override
     public List<User> getFriends(int userId) {
-        List<User> friends = new ArrayList<>(); // создаем пустой список друзей
-        String sqlCountQuery = "SELECT COUNT(FRIEND_ID) FROM USER_FRIENDS WHERE USER_ID = ?";
-        int count = jdbcTemplate.queryForObject(sqlCountQuery, Integer.class, userId);
+        String filmQuery = "SELECT COUNT(ID) FROM USERS WHERE ID = ?";
+        int count = jdbcTemplate.queryForObject(filmQuery, Integer.class, userId);
         if (count == 0) {
-            log.info("friends not found for user {}", userId);
-            return friends;
+            throw new NotFoundException("User not found with id: " + userId);
         }
-
-        String sql = "SELECT FRIEND_ID FROM USER_FRIENDS WHERE USER_ID = ?";
-        List<Integer> friendIds = jdbcTemplate.queryForList(sql, Integer.class, userId);
-        for (Integer friendId : friendIds) {
-            User friend = findUserById(friendId);
-            friends.add(friend);
-            log.info("friends found for user {}", userId);
-        }
-        return friends; // возвращаем список друзей
+        String sql = "SELECT U.* FROM USERS U INNER JOIN USER_FRIENDS UF ON U.ID = UF.FRIEND_ID WHERE UF.USER_ID = ?";
+        return jdbcTemplate.query(sql, this::mapRowToUser, userId);
     }
 
     @Override
@@ -195,7 +185,7 @@ public class UserDaoImpl implements UserStorage {
         String sqlQuery = "DELETE from USERS where id = ?";
         int deletedRows = jdbcTemplate.update(sqlQuery, id);
         if (deletedRows == 0) {
-            throw new NotFoundException("User not found");
+            throw new NotFoundException("User not found" + id);
         }
         log.info("Пользователь с идентификатором {} удален.", id);
     }

@@ -1,19 +1,18 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -40,32 +39,24 @@ public class Film {
     @Positive(message = "The duration of the film must be positive")
     private int duration;
 
+    private LinkedHashSet<Genre> genres;
+
+    private Mpa mpa;
+
     private Set<Integer> likes;
 
     public Set<Integer> getLikes() {
         if (likes == null) {
-            likes = new HashSet<>();
+            likes = new LinkedHashSet<>();
         }
         return likes;
     }
 
-    public Film(int id, String name, String description, LocalDate releaseDate, int duration) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
+    public Set<Genre> getGenres() {
+        if (genres == null) {
+            genres = new LinkedHashSet<>();
+        }
+        return genres;
     }
 
-    @Override
-    public String toString() {
-        return "Film{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", releaseDate=" + releaseDate +
-                ", duration=" + duration +
-                ", likes=" + likes +
-                '}';
-    }
 }

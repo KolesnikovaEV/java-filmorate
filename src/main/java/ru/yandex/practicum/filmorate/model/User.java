@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,15 +10,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
-//@JsonIgnoreProperties(value = {"friends"})
 public class User {
     private int id;
 
@@ -37,7 +34,8 @@ public class User {
     @PastOrPresent(message = "Birthday cannot be in the future")
     private LocalDate birthday;
 
-    private Set<Integer> friends;
+    private List<Integer> friends;
+    private boolean friendshipConfirmed = false;
 
     public String getName() {
         if (name == null || name.trim().isEmpty()) {
@@ -46,11 +44,26 @@ public class User {
         return name;
     }
 
-    public Set<Integer> getFriends() {
+    public List<Integer> getFriends() {
         if (friends == null) {
-            friends = new HashSet<>();
+            friends = new ArrayList<>();
         }
         return friends;
+    }
+
+    public void setFriends(List<Integer> friends) {
+        this.friends = friends;
+    }
+
+    public User(int id, String email, String login, String name, LocalDate birthday,
+                List<Integer> friends, boolean friendshipConfirmed) {
+        this.id = id;
+        this.email = email;
+        this.login = login;
+        this.name = name;
+        this.birthday = birthday;
+        this.friends = friends;
+        this.friendshipConfirmed = friendshipConfirmed;
     }
 
     public User(int id, String email, String login, String name, LocalDate birthday) {
@@ -70,6 +83,7 @@ public class User {
                 ", name='" + getName() + '\'' +
                 ", birthday=" + birthday +
                 ", friends=" + getFriends().size() +
+                ", friendshipConfirmed=" + friendshipConfirmed +
                 '}';
     }
 
@@ -78,11 +92,11 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && Objects.equals(email, user.email) && Objects.equals(login, user.login) && Objects.equals(name, user.name) && Objects.equals(birthday, user.birthday) && Objects.equals(friends, user.friends);
+        return id == user.id && Objects.equals(email, user.email) && Objects.equals(login, user.login) && Objects.equals(name, user.name) && Objects.equals(birthday, user.birthday) && Objects.equals(friends, user.friends) && friendshipConfirmed == user.friendshipConfirmed;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, login, name, birthday, friends);
+        return Objects.hash(id, email, login, name, birthday, friends, friendshipConfirmed);
     }
 }

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
@@ -246,7 +247,7 @@ class FilmoRateApplicationTests {
 
     @Test
     public void testFindNonExistentUserById() {
-        assertThrows(NotFoundException.class, () -> userStorage.findUserById(100));
+        assertThrows(EmptyResultDataAccessException.class, () -> userStorage.findUserById(100));
     }
 
     @Test
